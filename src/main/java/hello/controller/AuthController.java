@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Collections;
 import java.util.Map;
 
@@ -38,7 +39,12 @@ public class AuthController {
 
     @GetMapping("/auth")
     @ResponseBody
-    public LoginResult auth() {
+    public Object auth(HttpServletRequest request, HttpServletResponse response) {
+        String userAgent = request.getHeader("user-agent");
+        if (!userAgent.contains("Edg")){
+            return "死爬虫去死吧";
+        }//用user-agent 可以反爬虫
+
         return authService.getCurrentUser()
                 .map(LoginResult::success)
                 .orElse(LoginResult.success("用户没有登录", false));
